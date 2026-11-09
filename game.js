@@ -75,10 +75,35 @@ function initAudio(){if(audioContext)return;try{audioContext=new AudioContext();
 function soundShot(){if(!audioContext||!audioOn)return;const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(105,now);osc.frequency.exponentialRampToValueAtTime(28,now+.22);gain.gain.setValueAtTime(.42,now);gain.gain.exponentialRampToValueAtTime(.001,now+.28);osc.connect(gain).connect(audioBus);osc.start(now);osc.stop(now+.3);}
 function makeZombie(x,z){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- const torso=box(g,shirtMat,[0,1.05,0],[.62,.82,.34]);
- const head=new THREE.Mesh(sphereGeo,skinMat);head.position.set(0,1.67,-.015);head.scale.set(.24,.28,.23);g.add(head);
- const eyeMat=new THREE.MeshBasicMaterial({color:0xb63b2e});for(let s of [-1,1]){const e=new THREE.Mesh(sphereGeo,eyeMat);e.position.set(s*.09,1.7,-.21);e.scale.set(.035,.035,.025);g.add(e);}
- const limbs=[];for(let s of [-1,1]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.72,6),skinMat);arm.position.set(s*.39,1.05,-.08);arm.rotation.z=s*.55;g.add(arm);limbs.push(arm);const leg=new THREE.Mesh(new THREE.CylinderGeometry(.11,.14,.68,6),pantsMat);leg.position.set(s*.17,.38,0);g.add(leg);limbs.push(leg);}
+ const shirtPalette=[0x554f43,0x4c5149,0x5c4941,0x464d4b],pantsPalette=[0x393e38,0x343b40,0x494237,0x353934];
+ const clothes=mat(shirtPalette[Math.floor(Math.random()*shirtPalette.length)]),trousers=mat(pantsPalette[Math.floor(Math.random()*pantsPalette.length)]);
+ const torn=mat(0x292f2b),skin=new THREE.MeshStandardMaterial({color:Math.random()<.5?0x858578:0x777a6e,roughness:1}),wound=mat(0x633f37),shoeMat=mat(0x252a27,.8);
+ const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.31,.52,4,8),clothes);torso.position.set(0,1.14,0);torso.rotation.x=-.08;g.add(torso);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.245,12,10),skin);head.position.set(0,1.83,-.025);head.scale.set(.91,1.08,.94);g.add(head);
+ const jaw=new THREE.Mesh(new THREE.SphereGeometry(.18,10,8),skin);jaw.position.set(0,1.69,-.095);jaw.scale.set(1,.55,.72);g.add(jaw);
+ const hair=new THREE.Mesh(new THREE.SphereGeometry(.25,10,7),torn);hair.position.set(0,2.01,.015);hair.scale.set(1,.43,1);g.add(hair);
+ const eyeSocket=new THREE.MeshStandardMaterial({color:0x292824,roughness:1}),eyeMat=new THREE.MeshBasicMaterial({color:0xb94f3b});
+ for(const s of [-1,1]){const socket=new THREE.Mesh(new THREE.SphereGeometry(.063,8,6),eyeSocket);socket.position.set(s*.092,1.855,-.215);socket.scale.set(1,.72,.4);g.add(socket);const eye=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),eyeMat);eye.position.set(s*.092,1.855,-.239);g.add(eye);}
+ const nose=new THREE.Mesh(new THREE.ConeGeometry(.055,.13,5),skin);nose.position.set(0,1.79,-.245);nose.rotation.x=-.18;g.add(nose);
+ box(g,mat(0x292d29),[0,.79,0],[.53,.1,.36]);box(g,mat(0x91805c,.6),[0,.79,-.19],[.1,.07,.025]);
+ box(g,clothes,[-.17,1.18,-.177],[.17,.54,.035]);box(g,clothes,[.17,1.18,-.177],[.17,.54,.035]);
+ box(g,torn,[-.22,.96,-.201],[.12,.21,.018]);box(g,wound,[.12,1.2,-.198],[.09,.17,.012]);
+ const limbs=[];
+ for(const s of [-1,1]){
+  const arm=new THREE.Group();arm.position.set(s*.34,1.48,-.005);g.add(arm);
+  const upper=new THREE.Mesh(new THREE.CylinderGeometry(.105,.13,.43,8),clothes);upper.position.y=-.23;arm.add(upper);
+  const elbow=new THREE.Mesh(new THREE.SphereGeometry(.105,8,6),skin);elbow.position.y=-.44;arm.add(elbow);
+  const forearm=new THREE.Mesh(new THREE.CylinderGeometry(.075,.105,.39,8),skin);forearm.position.set(0,-.64,-.025);forearm.rotation.x=-.12;arm.add(forearm);
+  const hand=new THREE.Mesh(new THREE.SphereGeometry(.095,8,6),skin);hand.position.set(0,-.84,-.04);hand.scale.set(.78,1.18,.7);arm.add(hand);
+  for(let f=0;f<3;f++){const finger=new THREE.Mesh(new THREE.CylinderGeometry(.018,.022,.11,5),skin);finger.position.set((f-1)*.04,-.91,-.085);finger.rotation.x=-.35;arm.add(finger);}
+  arm.rotation.z=-s*.18;arm.rotation.x=-.38;limbs.push(arm);
+  const leg=new THREE.Group();leg.position.set(s*.16,.78,0);g.add(leg);
+  const thigh=new THREE.Mesh(new THREE.CylinderGeometry(.13,.105,.43,8),trousers);thigh.position.y=-.23;leg.add(thigh);
+  const knee=new THREE.Mesh(new THREE.SphereGeometry(.11,8,6),trousers);knee.position.y=-.45;leg.add(knee);
+  const shin=new THREE.Mesh(new THREE.CylinderGeometry(.075,.105,.35,8),trousers);shin.position.y=-.64;leg.add(shin);
+  const shoe=new THREE.Mesh(new THREE.BoxGeometry(.2,.13,.34),shoeMat);shoe.position.set(0,-.84,-.055);leg.add(shoe);
+  limbs.push(leg);
+ }
  const zombie={group:g,limbs,hp:100,alive:true,speed:.7+Math.random()*.25,attack:0,roam:Math.random()*6};zombies.push(zombie);return zombie;
 }
 [[-2,-20],[2,-34],[-4,-48],[1,-62],[5,-29],[-5,-12]].forEach(p=>makeZombie(...p));
@@ -129,12 +154,13 @@ document.addEventListener('pointerlockchange',()=>{});
 document.addEventListener('mousemove',e=>{if(document.pointerLockElement===$('world')&&running&&!paused){player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.15,1.15);}});
 $('world').addEventListener('pointerdown',e=>{if(!isTouchDevice()||!running||paused||inventoryOpen)return;touchLook={x:e.clientX,y:e.clientY,id:e.pointerId};$('world').setPointerCapture(e.pointerId);});
 $('world').addEventListener('pointermove',e=>{if(touchLook&&e.pointerId===touchLook.id){const dx=e.clientX-touchLook.x,dy=e.clientY-touchLook.y;touchLook.x=e.clientX;touchLook.y=e.clientY;player.yaw-=dx*.006;player.pitch=clamp(player.pitch-dy*.004,-1.15,1.15);}});
-$('world').addEventListener('pointerup',e=>{if(touchLook&&e.pointerId===touchLook.id)touchLook=null;});
+function endTouchLook(e){if(touchLook&&e.pointerId===touchLook.id)touchLook=null;}
+ $('world').addEventListener('pointerup',endTouchLook);$('world').addEventListener('pointercancel',endTouchLook);
 $('world').addEventListener('contextmenu',e=>e.preventDefault());$('world').addEventListener('mousedown',e=>{if(e.button===0)shoot();});
-const stick=$('stick'),knob=stick.querySelector('.stick-knob');stick.addEventListener('pointerdown',e=>{e.preventDefault();stick.setPointerCapture(e.pointerId);joystick={id:e.pointerId,cx:stick.getBoundingClientRect().left+56,cy:stick.getBoundingClientRect().top+56};moveJoystick(e);});
-function moveJoystick(e){if(!joystick||e.pointerId!==joystick.id)return;const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy,len=Math.max(1,Math.hypot(dx,dy)),mag=Math.min(36,len);moveX=dx/len*mag/36;moveY=dy/len*mag/36;knob.style.transform=`translate(${dx/len*mag}px,${dy/len*mag}px)`;}
+const stick=$('stick'),knob=stick.querySelector('.stick-knob');stick.addEventListener('pointerdown',e=>{e.preventDefault();stick.setPointerCapture(e.pointerId);const rect=stick.getBoundingClientRect(),radius=(rect.width-knob.offsetWidth)/2;joystick={id:e.pointerId,cx:rect.left+rect.width/2,cy:rect.top+rect.height/2,radius};moveJoystick(e);});
+function moveJoystick(e){if(!joystick||e.pointerId!==joystick.id)return;const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy,len=Math.max(1,Math.hypot(dx,dy)),mag=Math.min(joystick.radius,len);moveX=dx/len*mag/joystick.radius;moveY=dy/len*mag/joystick.radius;knob.style.transform=`translate(${dx/len*mag}px,${dy/len*mag}px)`;}
 stick.addEventListener('pointermove',moveJoystick);function stopJoystick(e){if(joystick&&e.pointerId===joystick.id){joystick=null;moveX=moveY=0;knob.style.transform='';}}stick.addEventListener('pointerup',stopJoystick);stick.addEventListener('pointercancel',stopJoystick);
-$('mobileRun').addEventListener('pointerdown',e=>{e.preventDefault();runHeld=true;});$('mobileRun').addEventListener('pointerup',()=>runHeld=false);$('mobileRun').addEventListener('pointercancel',()=>runHeld=false);
+$('mobileRun').addEventListener('pointerdown',e=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);runHeld=true;});$('mobileRun').addEventListener('pointerup',()=>runHeld=false);$('mobileRun').addEventListener('pointercancel',()=>runHeld=false);
 $('mobileUse').addEventListener('pointerdown',e=>{e.preventDefault();search();});$('mobileFire').addEventListener('pointerdown',e=>{e.preventDefault();shoot();});
 let prev=performance.now();
 function update(dt){if(!running||paused||gameEnded)return;elapsed+=dt;shotCooldown=Math.max(0,shotCooldown-dt);attackCooldown=Math.max(0,attackCooldown-dt);if(toastTimer>0){toastTimer-=dt*1000;if(toastTimer<=0)ui.message.classList.remove('show');}
