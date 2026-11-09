@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#101513" />
+  <title>ÚLTIMO ABRIGO — Zona de Quarentena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.164.1/build/three.module.js"}}</script>
+</head>
+<body>
+  <main id="game">
+    <canvas id="world"></canvas>
+    <div class="vignette"></div><div class="grain"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">//</span><div><b>ÚLTIMO ABRIGO</b><small>SETOR 07 · ZONA DE QUARENTENA</small></div></div>
+      <div class="header-right"><span class="live-dot"></span><span id="clock">06:42</span><span class="weather">CHUVA FRACA</span><button id="inventoryBtn" class="icon-btn" aria-label="Inventário">▤</button><button id="soundBtn" class="icon-btn" aria-label="Som">♫</button><button id="pauseBtn" class="icon-btn" aria-label="Pausar">Ⅱ</button></div>
+    </header>
+    <section class="mission-card"><div class="eyebrow"><i></i> OBJETIVO ATUAL</div><h2 id="objective">ENCONTRE SUPRIMENTOS</h2><p id="objectiveHint">Vasculhe a rua. Uma mochila e água são prioridade.</p><div class="objective-progress"><span id="progressFill"></span></div><small id="progressText">0 / 3 SUPRIMENTOS</small></section>
+    <div class="location"><span class="pin">⌖</span><div><b id="locationName">AVENIDA CENTRAL</b><small>COORD. 42.07° N · 19.44° E</small></div></div>
+    <div class="threat"><span class="threat-icon">◉</span><div><b id="threatCount">0</b><small>AMEAÇAS PRÓXIMAS</small></div></div>
+    <div id="crosshair"><i></i><i></i><i></i><i></i><span></span></div>
+    <div class="interaction" id="interaction"><span class="key">E</span><span id="interactionText">VASCULHAR</span></div>
+    <section class="status-panel">
+      <div class="status-head"><span>ESTADO FÍSICO</span><span id="condition">ESTÁVEL</span></div>
+      <div class="stat-row"><span class="stat-icon heart">♥</span><div class="stat-label"><span>SAÚDE</span><div class="meter"><i id="healthBar" class="health"></i></div></div><b id="healthValue">100</b></div>
+      <div class="stat-row"><span class="stat-icon">◒</span><div class="stat-label"><span>FOME</span><div class="meter"><i id="hungerBar" class="hunger"></i></div></div><b id="hungerValue">84</b></div>
+      <div class="stat-row"><span class="stat-icon water">◉</span><div class="stat-label"><span>SEDE</span><div class="meter"><i id="thirstBar" class="thirst"></i></div></div><b id="thirstValue">72</b></div>
+      <div class="stat-row"><span class="stat-icon energy">ϟ</span><div class="stat-label"><span>FÔLEGO</span><div class="meter"><i id="staminaBar" class="stamina"></i></div></div><b id="staminaValue">100</b></div>
+      <div class="status-foot"><span>◷ <b id="dayValue">DIA 01</b></span><span>◈ <b id="tempValue">12°C</b></span><span id="woundTag" class="wound-tag">SEM FERIMENTOS</span></div>
+    </section>
+    <section class="weapon-panel"><div class="weapon-top"><span>ARMA EQUIPADA</span><span id="weaponMode">SEMI-AUTO</span></div><div class="weapon-name"><span class="weapon-glyph">⌁</span><div><b>IZH-43</b><small>ESCOPETA DE CANO DUPLO</small></div></div><div class="ammo"><strong id="ammoValue">2</strong><span>/ <b id="reserveValue">12</b><small> CARTUCHOS</small></span><button id="reloadBtn" title="Recarregar">↻</button></div><div class="weapon-controls"><span><kbd>R</kbd> RECARREGAR</span><span><kbd>F</kbd> LANTERNA</span></div></section>
+    <div class="quickbar"><span class="quick-label">ACESSO RÁPIDO</span><button class="quick-slot active" data-slot="0"><b>1</b><span>🔫</span><small>IZH-43</small></button><button class="quick-slot" data-slot="1"><b>2</b><span>✚</span><small>CURATIVO</small><i id="medCount">1</i></button><button class="quick-slot" data-slot="2"><b>3</b><span>▣</span><small>COMIDA</small><i id="foodCount">1</i></button><button class="quick-slot" data-slot="3"><b>4</b><span>◉</span><small>ÁGUA</small><i id="waterCount">1</i></button></div>
+    <div class="message" id="message"></div>
+    <div class="damage-flash" id="damageFlash"></div>
+    <div class="mobile-controls" id="mobileControls"><div id="stick" class="stick"><div class="stick-base"><i></i></div><div class="stick-knob"></div></div><button id="mobileRun" class="touch-btn run">⇧<small>CORRER</small></button><button id="mobileUse" class="touch-btn use">E<small>USAR</small></button><button id="mobileFire" class="touch-btn fire">✕<small>ATIRAR</small></button></div>
+    <div id="startScreen" class="screen visible"><div class="start-art"><div class="sun"></div><div class="silhouette s1"></div><div class="silhouette s2"></div><div class="silhouette s3"></div><div class="start-grain"></div></div><div class="start-content"><div class="start-kicker"><span></span> RELATÓRIO DE SOBREVIVÊNCIA · 07:12</div><h1>O MUNDO<br>FICOU <em>QUIETO.</em></h1><p>Três dias desde o último sinal de rádio.<br>A cidade ainda respira. Você também.</p><div class="start-objective"><b>MISSÃO</b><span>Encontre suprimentos e alcance o abrigo na zona leste.</span></div><button id="startBtn" class="start-button">ENTRAR NA ZONA <span>→</span></button><small class="start-note">FONE RECOMENDADO · EXPERIÊNCIA EM PAISAGEM</small></div><div class="start-footer"><span>SETOR 07 / NOVIGRAD</span><span>PROTOCOLO DE QUARENTENA ATIVO</span></div></div>
+    <div id="inventoryScreen" class="modal-screen"><div class="modal-card"><button class="close-modal" id="closeInventory">×</button><div class="eyebrow">MOCHILA · CAPACIDADE <span id="capacity">3 / 12</span></div><h2>INVENTÁRIO</h2><div id="inventoryList" class="inventory-list"></div><div class="inventory-tip">Arraste os itens para organizar · Toque para usar</div></div></div>
+    <div id="pauseScreen" class="modal-screen"><div class="modal-card pause-card"><div class="eyebrow">PAUSA · SETOR 07</div><h2>RESPIRA.</h2><p>O silêncio não vai durar.</p><button id="resumeBtn" class="start-button">VOLTAR À ZONA <span>→</span></button><button id="restartBtn" class="plain-button">RECOMEÇAR JORNADA</button></div></div>
+    <div id="endScreen" class="modal-screen"><div class="modal-card pause-card"><div class="eyebrow">SINAL DE RÁDIO DETECTADO</div><h2 id="endTitle">VOCÊ SOBREVIVEU.</h2><p id="endText">O abrigo ainda está de pé.</p><button id="againBtn" class="start-button">TENTAR DE NOVO <span>→</span></button></div></div>
+    <div id="portrait"><span>⤾</span><b>VIRE O DISPOSITIVO</b><small>ESTE JOGO FOI FEITO PARA TELA DEITADA</small></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
