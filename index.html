@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#18251f" />
+  <title>Oficina do Vale — Simulador de Marcenaria</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <main id="game" aria-label="Oficina do Vale">
+    <canvas id="scene"></canvas>
+    <div class="vignette"></div>
+    <div id="hud">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">⌂</span><div><b>OFICINA DO VALE</b><small>PROPRIEDADE • DIA 01</small></div></div>
+        <div class="world-clock"><span class="sun-icon">☀</span><div><b id="timeLabel">09:24</b><small>PRIMAVERA · AMENO</small></div></div>
+        <div class="top-actions"><button class="icon-btn" id="soundBtn" title="Som">♫</button><button class="icon-btn" id="saveBtn" title="Salvar">↥</button><button class="icon-btn" id="menuBtn" title="Menu">☰</button></div>
+      </header>
+      <div class="left-note"><span class="live-dot"></span><span id="weatherText">Céu limpo · brisa leve</span></div>
+      <div class="center-reticle"><i></i></div>
+      <section id="prompt" class="prompt hidden"><strong id="targetName"></strong><span id="targetAction"></span><small>E · interagir &nbsp; F · pegar</small></section>
+      <div class="crosshair-hint" id="walkHint">Clique para entrar na propriedade</div>
+      <div class="bottom-left"><div class="status-pill"><span class="status-icon">⚒</span><span><b id="activityTitle">Oficina livre</b><small id="activitySub">Escolha o que construir hoje</small></span></div><div class="status-pill dog-pill"><span class="dog-icon">🐕</span><span><b id="dogName">Tico</b><small id="dogStatus">farejando o quintal</small></span></div></div>
+      <div class="bottom-center"><div id="hotbar" class="hotbar"></div><div class="hotbar-label">BARRA DE FERRAMENTAS <span>1–6</span></div></div>
+      <div class="bottom-right"><div class="need-card"><div class="need-icon">✦</div><div><small>SEU PRÓXIMO PROJETO</small><b id="projectHint">Uma mesa feita à mão</b></div><button id="openPlans" aria-label="Ver projetos">→</button></div><div class="control-tip"><kbd>W A S D</kbd> mover <kbd>SHIFT</kbd> correr <kbd>E</kbd> interagir</div></div>
+      <nav class="quick-nav"><button data-panel="inventory"><span>▦</span>Inventário</button><button data-panel="plans"><span>⌑</span>Projetos</button><button data-panel="build"><span>⌖</span>Construir</button></nav>
+    </div>
+    <div id="modalLayer" class="modal-layer hidden">
+      <section class="panel" id="panel">
+        <button class="close-btn" id="closePanel">×</button>
+        <div class="panel-eyebrow" id="panelEyebrow">SEU ESPAÇO DE TRABALHO</div>
+        <h1 id="panelTitle">Projetos</h1>
+        <div id="panelBody"></div>
+      </section>
+    </div>
+    <div id="toast" class="toast"></div>
+    <div id="startScreen" class="start-screen">
+      <div class="start-card"><div class="start-emblem">⌂</div><p class="eyebrow">UM LUGAR SÓ SEU</p><h1>Oficina<br><em>do Vale</em></h1><p class="start-copy">Uma propriedade tranquila, ferramentas à mão e madeira esperando por uma nova vida.</p><button id="startBtn" class="primary-btn">ENTRAR NA PROPRIEDADE <span>↗</span></button><div class="start-foot">EXPLORAÇÃO LIVRE · SEM PRESSA</div></div>
+      <div class="start-landscape"><span>01 — OFICINA</span><span>PRIMAVERA, 09:24</span></div>
+    </div>
+  </main>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>
