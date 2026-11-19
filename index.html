@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#18251f" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='.9em' font-size='56'%3E⌂%3C/text%3E%3C/svg%3E" />
   <title>Oficina do Vale — Simulador de Marcenaria</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="./style.css" />
@@ -28,6 +29,12 @@
       <div class="bottom-left"><div class="status-pill"><span class="status-icon">⚒</span><span><b id="activityTitle">Oficina livre</b><small id="activitySub">Escolha o que construir hoje</small></span></div><div class="status-pill dog-pill"><span class="dog-icon">🐕</span><span><b id="dogName">Tico</b><small id="dogStatus">farejando o quintal</small></span></div></div>
       <div class="bottom-center"><div id="hotbar" class="hotbar"></div><div class="hotbar-label">BARRA DE FERRAMENTAS <span>1–6</span></div></div>
       <div class="bottom-right"><div class="need-card"><div class="need-icon">✦</div><div><small>SEU PRÓXIMO PROJETO</small><b id="projectHint">Uma mesa feita à mão</b></div><button id="openPlans" aria-label="Ver projetos">→</button></div><div class="control-tip"><kbd>W A S D</kbd> mover <kbd>SHIFT</kbd> correr <kbd>E</kbd> interagir</div></div>
+      <div class="touch-pad" id="touchPad" aria-label="Mover personagem"><span class="touch-pad-knob" id="touchPadKnob"></span></div>
+      <div class="touch-actions" aria-label="Controles de toque">
+        <button id="touchInteract" aria-label="Interagir">E</button>
+        <button id="touchGrab" aria-label="Pegar ou soltar objeto">F</button>
+        <button id="touchRotate" aria-label="Girar objeto">↻</button>
+      </div>
       <nav class="quick-nav"><button data-panel="inventory"><span>▦</span>Inventário</button><button data-panel="plans"><span>⌑</span>Projetos</button><button data-panel="build"><span>⌖</span>Construir</button></nav>
     </div>
     <div id="modalLayer" class="modal-layer hidden">
